@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<style>header{padding-top:calc(10px + env(safe-area-inset-top))!important;background:#05080F!important}</style>  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>A&M Drinks</title>
@@ -15,7 +14,7 @@
 :root{--bg:#05080F;--card:#111827;--card2:#1A2335;--line:#263247;--blue:#1E5BFF;--green:#39FF6A;--text:#F4F7FB;--muted:#9AA6B8;--red:#FF4D5E;--yellow:#FFC93C}
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 body{background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:90px}
-header{position:sticky;top:0;z-index:10;background:rgba(5,8,15,.95);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--line)}
+header{position:sticky;top:0;z-index:10;background:#05080F;display:flex;align-items:center;justify-content:space-between;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line)}
 header img{height:46px}
 .icon-btn{background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:9px 12px;font-size:18px;cursor:pointer;position:relative}
 .badge{position:absolute;top:-6px;right:-6px;background:var(--green);color:#04130A;font-weight:800;font-size:11px;border-radius:10px;padding:2px 6px}
@@ -51,20 +50,36 @@ h2{font-size:20px;margin-bottom:12px}h3{font-size:16px;margin:16px 0 8px;color:v
 .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
 .total{display:flex;justify-content:space-between;font-size:22px;font-weight:800;margin:14px 0}.total span:last-child{color:var(--green)}
 .stack{display:flex;flex-direction:column;gap:10px;margin-top:10px}
-.kv{display:flex;justify-content:space-between;padding:5px 0;font-size:14px}.kv span:first-child{color:var(--muted)}
+.kv{display:flex;justify-content:space-between;padding:5px 0;font-size:14px;gap:10px}.kv span:first-child{color:var(--muted)}
 input{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:#0B1220;color:var(--text);font-size:16px}
 label{font-size:12px;color:var(--muted);display:block;margin:8px 0 4px}
-.tabs{display:flex;gap:8px;margin-bottom:12px}.tabs button{flex:1;white-space:nowrap;padding:11px 6px;font-size:14px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.tabs button{padding:9px 2px;font-size:12px;line-height:1.3;border-radius:12px}
+.tabs button span{display:block;font-size:18px}
 .tabs button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.chips button{padding:9px 2px;font-size:13px;border-radius:20px}
+.chips button.on{background:var(--green);color:#04130A;border-color:var(--green)}
 .pill{font-size:12px;font-weight:700;padding:8px 10px;border-radius:20px;border:none;cursor:pointer}
 .ok{background:rgba(57,255,106,.15);color:var(--green)}.pend{background:rgba(255,201,60,.15);color:var(--yellow)}
+.anul{opacity:.55}.anul .tag{color:var(--red);font-weight:700;font-size:13px}
 .adm-item{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:start}
 .adm-item .thumb{width:64px;height:64px;border-radius:10px;background:#0B1220;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .adm-item .thumb img{width:100%;height:100%;object-fit:cover}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.kpi small{color:var(--muted);font-size:12px;display:block}.kpi b{font-size:20px;display:block;margin-top:4px}
+.hbar{margin:8px 0}.hbar .top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;gap:8px}
+.hbar .track{height:10px;background:#0B1220;border-radius:6px;overflow:hidden}
+.hbar .fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:6px}
+.days{display:flex;align-items:flex-end;gap:4px;height:120px;margin-top:8px}
+.days div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:9px;color:var(--muted)}
+.days i{display:block;width:100%;background:linear-gradient(0deg,var(--blue),var(--green));border-radius:4px 4px 0 0;min-height:2px}
 .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--green);color:#04130A;font-weight:800;padding:10px 16px;border-radius:12px;display:none;z-index:50;max-width:90%;text-align:center}
 .toast.err{background:var(--red);color:#fff}
 .big-ok{text-align:center;padding:10px 0}.big-ok div{font-size:54px}
+.aviso{background:rgba(255,201,60,.12);border:1px solid rgba(255,201,60,.4);color:var(--yellow);border-radius:12px;padding:10px 12px;font-size:13px;text-align:center}
 .loading{text-align:center;padding:40px;color:var(--muted)}
 footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
 </style>
@@ -79,14 +94,12 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
   </div>
 </header>
 
-<!-- CATÁLOGO -->
 <section id="catalogo" class="view active">
   <div class="banner">⚡ <b>Retiro presencial</b> · Arma tu pedido y coordina el retiro por WhatsApp</div>
   <div class="grid" id="grid"><div class="loading">Cargando productos…</div></div>
   <footer>A&M Drinks · Bebidas energéticas</footer>
 </section>
 
-<!-- CARRITO -->
 <section id="carrito" class="view">
   <h2>🛒 Tu compra</h2>
   <div id="cartList"></div>
@@ -98,10 +111,10 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
   </div>
 </section>
 
-<!-- PAGO -->
 <section id="pago" class="view">
   <div class="big-ok"><div>✅</div><h2 id="pagoTitulo">Pedido generado</h2></div>
   <div class="total"><span>TOTAL A PAGAR</span><span id="pagoTotal">$0</span></div>
+  <div class="aviso" id="avisoReserva" style="display:none"></div>
   <div class="box">
     <h3 style="margin-top:0">🏦 Transferencia</h3>
     <div id="datosBanco"></div>
@@ -118,7 +131,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
   <button class="btn btn-ghost full" onclick="go('catalogo')">Volver a la tienda</button>
 </section>
 
-<!-- LOGIN ADMIN -->
 <section id="login" class="view">
   <h2>🔐 Administración</h2>
   <div class="box">
@@ -129,13 +141,13 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
   <button class="btn btn-ghost full" onclick="go('catalogo')">Volver a la tienda</button>
 </section>
 
-<!-- ADMIN -->
 <section id="admin" class="view">
   <h2>🔐 Administración</h2>
   <div class="tabs">
-    <button class="btn btn-ghost on" data-t="aProd" onclick="tab(this)">📦 Productos</button>
-    <button class="btn btn-ghost" data-t="aPed" onclick="tab(this)">🛒 Pedidos</button>
-    <button class="btn btn-ghost" data-t="aConf" onclick="tab(this)">⚙️ Ajustes</button>
+    <button class="btn btn-ghost on" data-t="aProd" onclick="tab(this)"><span>📦</span>Productos</button>
+    <button class="btn btn-ghost" data-t="aPed" onclick="tab(this)"><span>🛒</span>Pedidos</button>
+    <button class="btn btn-ghost" data-t="aVen" onclick="tab(this)"><span>📊</span>Ventas</button>
+    <button class="btn btn-ghost" data-t="aConf" onclick="tab(this)"><span>⚙️</span>Ajustes</button>
   </div>
 
   <div id="aProd" class="atab">
@@ -145,8 +157,18 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
 
   <div id="aPed" class="atab" style="display:none">
     <button class="btn btn-ghost full" onclick="cargarPedidos()">🔄 Actualizar pedidos</button>
-    <div id="resumenVentas" class="box"></div>
+    <div id="resumenPedidos" class="box"></div>
     <div id="admPedidos"></div>
+  </div>
+
+  <div id="aVen" class="atab" style="display:none">
+    <div class="chips">
+      <button class="btn btn-ghost" data-p="hoy" onclick="periodo(this)">Hoy</button>
+      <button class="btn btn-ghost on" data-p="7d" onclick="periodo(this)">7 días</button>
+      <button class="btn btn-ghost" data-p="mes" onclick="periodo(this)">Mes</button>
+      <button class="btn btn-ghost" data-p="todo" onclick="periodo(this)">Todo</button>
+    </div>
+    <div id="ventas"></div>
   </div>
 
   <div id="aConf" class="atab" style="display:none">
@@ -154,6 +176,11 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
       <h3 style="margin-top:0">📱 WhatsApp</h3>
       <label>Número (formato 569XXXXXXXX, sin + ni espacios)</label>
       <input id="cWa" inputmode="numeric" placeholder="569XXXXXXXX">
+    </div>
+    <div class="box">
+      <h3 style="margin-top:0">⏱️ Reserva de stock</h3>
+      <label>Horas que tiene el cliente para pagar. Después el pedido se anula y el stock vuelve a la tienda (0 = desactivado)</label>
+      <input id="cHoras" type="number" inputmode="numeric" min="0" max="72">
     </div>
     <div class="box">
       <h3 style="margin-top:0">🏦 Datos de transferencia</h3>
@@ -170,7 +197,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
     </div>
     <button class="btn btn-green full" onclick="guardarAjustes()">💾 GUARDAR AJUSTES</button>
     <div class="stack">
-      <button class="btn btn-ghost full" id="btnImportar" onclick="importarLocal()" style="display:none">📲 Subir fotos y stock guardados en este iPhone</button>
       <button class="btn btn-ghost full" onclick="salir()">🚪 Cerrar sesión</button>
     </div>
   </div>
@@ -185,20 +211,19 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* =========================================================
-   A&M Drinks · v2 con base de datos compartida (Supabase) — Nexo
-   ========================================================= */
+/* A&M Drinks · v4 — Nexo */
 const CFG = window.AM_CONFIG || {};
 let db = null;
 try { db = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_KEY); } catch(e) {}
 
 let productos = [], ajustes = {}, pedidos = [];
-let carrito = {}, pedidoActual = null, esAdmin = false;
+let carrito = {}, pedidoActual = null, esAdmin = false, periodoVentas = "7d";
 
 const $ = id => document.getElementById(id);
 const clp = n => "$" + Math.round(n||0).toLocaleString("es-CL");
 const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const numPed = n => "#" + String(n).padStart(4,"0");
+const horasReserva = () => Math.max(0, +(ajustes.horas_reserva ?? 2) || 0);
 
 function toast(t,err){ const e=$("toast"); e.textContent=t; e.className="toast"+(err?" err":""); e.style.display="block"; clearTimeout(e._t); e._t=setTimeout(()=>e.style.display="none",err?3500:1800); }
 function falla(error, msg){ console.error(error); toast("⚠️ " + (msg || (error && error.message) || "Error de conexión"), true); }
@@ -212,12 +237,11 @@ function go(v){
   window.scrollTo(0,0);
 }
 
-/* ---------- CARGA DE DATOS ---------- */
+/* ---------- DATOS ---------- */
 async function cargarProductos(){
   const { data, error } = await db.from("productos").select("*").eq("activo", true).order("orden").order("id");
   if(error) return falla(error, "No se pudieron cargar los productos");
   productos = data;
-  // limpia del carrito lo que ya no existe o supera el stock
   for(const id in carrito){ const p=productos.find(x=>x.id==id); if(!p||p.stock<=0) delete carrito[id]; else if(carrito[id]>p.stock) carrito[id]=p.stock; }
 }
 async function cargarAjustes(){
@@ -251,7 +275,6 @@ function renderCatalogo(){
   }).join("");
   actualizarBarra();
 }
-
 function cambiar(id,d){
   const p = productos.find(x=>x.id===id); if(!p) return;
   const n = (carrito[id]||0)+d;
@@ -283,7 +306,6 @@ function renderCarrito(){
   actualizarBarra();
 }
 
-/* ---------- CONFIRMAR PEDIDO (la base de datos valida y descuenta stock) ---------- */
 async function confirmarPedido(){
   const btn = $("btnConfirmar"); btn.disabled = true; btn.textContent = "Procesando…";
   const items = Object.entries(carrito).map(([id,q])=>({id:+id, cantidad:q}));
@@ -302,23 +324,24 @@ async function confirmarPedido(){
 }
 
 function mostrarPago(){
-  const a = ajustes, p = pedidoActual;
+  const a = ajustes, p = pedidoActual, h = horasReserva();
   $("pagoTitulo").textContent = "Pedido " + numPed(p.numero) + " generado";
   $("pagoTotal").textContent = clp(p.total);
+  $("avisoReserva").style.display = h ? "block" : "none";
+  $("avisoReserva").textContent = `⏱️ Tus productos quedan reservados por ${h} ${h===1?"hora":"horas"}. Si no se registra el pago, el pedido se anula.`;
   const f = (k,v)=> `<div class="kv"><span>${k}</span><span>${v?esc(v):'<i class="muted">por configurar</i>'}</span></div>`;
   $("datosBanco").innerHTML = f("Titular",a.titular)+f("RUT",a.rut)+f("Banco",a.banco)+f("Tipo de cuenta",a.tipo)+f("N° cuenta",a.cuenta)+(a.correo?f("Correo",a.correo):"")+f("Monto",clp(p.total));
   $("boxMP").style.display = a.mp ? "block" : "none";
   if(a.mp) $("linkMP").href = a.mp;
+  actualizarBarra();
   go("pago");
 }
-
 function copiarDatos(){
   const a=ajustes, p=pedidoActual;
   const t = [a.titular,a.rut,a.banco,a.tipo,a.cuenta,a.correo,"Monto: "+clp(p.total)].filter(Boolean).join("\n");
   (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject())
     .then(()=>toast("✅ Datos copiados")).catch(()=>prompt("Copia los datos:", t));
 }
-
 function avisarWhatsApp(){
   const p = pedidoActual;
   if(!ajustes.wa) return toast("⚠️ Falta configurar el WhatsApp", true);
@@ -327,7 +350,7 @@ function avisarWhatsApp(){
   window.location.href = `https://wa.me/${ajustes.wa}?text=${encodeURIComponent(msg)}`;
 }
 
-/* ---------- ADMIN: SESIÓN ---------- */
+/* ---------- ADMIN ---------- */
 async function abrirAdmin(){
   if(esAdmin){ await mostrarAdmin(); return; }
   const { data } = await db.auth.getSession();
@@ -339,19 +362,18 @@ async function login(){
   $("lPass").value=""; esAdmin = true; await mostrarAdmin();
 }
 async function salir(){ await db.auth.signOut(); esAdmin=false; go("catalogo"); }
-
 async function mostrarAdmin(){
   go("admin");
   await Promise.all([cargarProductosAdmin(), cargarAjustes(), cargarPedidos()]);
   renderAjustes();
-  $("btnImportar").style.display = localStorage.getItem("am_productos") ? "block" : "none";
 }
 function tab(b){
   document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
   document.querySelectorAll(".atab").forEach(x=>x.style.display="none"); $(b.dataset.t).style.display="block";
+  if(b.dataset.t==="aPed" || b.dataset.t==="aVen") cargarPedidos();
 }
 
-/* ---------- ADMIN: PRODUCTOS ---------- */
+/* Productos */
 let productosAdmin = [];
 async function cargarProductosAdmin(){
   const { data, error } = await db.from("productos").select("*").eq("activo",true).order("orden").order("id");
@@ -382,8 +404,7 @@ async function editar(id, cambios){
   Object.assign(productosAdmin.find(x=>x.id===id), cambios);
   toast("💾 Guardado"); await cargarProductos();
 }
-
-function comprimir(file){ // reduce la foto a 600 px (JPG) antes de subirla
+function comprimir(file){
   return new Promise((res,rej)=>{
     const img = new Image(); img.onerror = rej;
     img.onload = ()=>{ const c=document.createElement("canvas"), s=Math.min(1,600/Math.max(img.width,img.height));
@@ -392,11 +413,11 @@ function comprimir(file){ // reduce la foto a 600 px (JPG) antes de subirla
     img.src = URL.createObjectURL(file);
   });
 }
-async function subirFoto(id, fileOrBlob, silencioso){
-  if(!fileOrBlob) return;
-  if(!silencioso) toast("⏳ Subiendo foto…");
+async function subirFoto(id, file){
+  if(!file) return;
+  toast("⏳ Subiendo foto…");
   try{
-    const blob = await comprimir(fileOrBlob);
+    const blob = await comprimir(file);
     const ruta = `p${id}-${Date.now()}.jpg`;
     const { error } = await db.storage.from("productos").upload(ruta, blob, { contentType:"image/jpeg", upsert:true });
     if(error) throw error;
@@ -418,28 +439,36 @@ async function eliminar(id){
   await cargarProductosAdmin(); await cargarProductos();
 }
 
-/* ---------- ADMIN: PEDIDOS ---------- */
+/* Pedidos */
 async function cargarPedidos(){
-  const { data, error } = await db.from("pedidos").select("*").order("id",{ascending:false}).limit(200);
+  const { data, error } = await db.from("pedidos").select("*").order("id",{ascending:false}).limit(1000);
   if(error) return falla(error);
-  pedidos = data; renderPedidos();
+  pedidos = data; renderPedidos(); renderVentas();
+}
+function venceEn(o){
+  const h = horasReserva(); if(!h || o.pagado || o.entregado || o.anulado) return "";
+  const min = Math.round((new Date(o.fecha).getTime() + h*3600000 - Date.now())/60000);
+  if(min <= 0) return `<div class="muted" style="color:var(--yellow)">⏱️ Se anulará en los próximos minutos</div>`;
+  return `<div class="muted" style="color:var(--yellow)">⏱️ Se anula en ${min>=60?Math.floor(min/60)+" h "+(min%60)+" min":min+" min"} si no se paga</div>`;
 }
 function renderPedidos(){
+  const activos = pedidos.filter(x=>!x.anulado);
   const suma = arr => arr.reduce((s,x)=>s+x.total,0);
-  $("resumenVentas").innerHTML = `
-    <div class="kv"><span>Pedidos</span><b>${pedidos.length}</b></div>
-    <div class="kv"><span>Ventas pagadas</span><b style="color:var(--green)">${clp(suma(pedidos.filter(x=>x.pagado)))}</b></div>
-    <div class="kv"><span>Pago pendiente</span><b style="color:var(--yellow)">${clp(suma(pedidos.filter(x=>!x.pagado)))}</b></div>`;
-  $("admPedidos").innerHTML = pedidos.length ? pedidos.map(o=>`
-    <div class="box">
+  $("resumenPedidos").innerHTML = `
+    <div class="kv"><span>Pago pendiente</span><b style="color:var(--yellow)">${clp(suma(activos.filter(x=>!x.pagado)))}</b></div>
+    <div class="kv"><span>Por entregar</span><b>${activos.filter(x=>!x.entregado).length}</b></div>`;
+  $("admPedidos").innerHTML = pedidos.length ? pedidos.slice(0,100).map(o=>`
+    <div class="box ${o.anulado?'anul':''}">
       <div class="kv"><b>Pedido ${numPed(o.id)}</b><span class="muted">${new Date(o.fecha).toLocaleString("es-CL",{dateStyle:"short",timeStyle:"short"})}</span></div>
       ${o.detalle.map(d=>`<div class="muted">• ${d.cantidad} × ${esc(d.nombre)}</div>`).join("")}
       <div class="kv" style="margin-top:6px"><span>Total</span><b>${clp(o.total)}</b></div>
+      ${o.anulado ? `<div class="tag">❌ Anulado · ${esc(o.motivo||"")}</div>` : `
+      ${venceEn(o)}
       <div class="two" style="margin-top:8px">
         <button class="pill ${o.pagado?'ok':'pend'}" onclick="estado(${o.id},'pagado',${!o.pagado})">${o.pagado?'✅ Pagado':'🟡 Pago pendiente'}</button>
         <button class="pill ${o.entregado?'ok':'pend'}" onclick="estado(${o.id},'entregado',${!o.entregado})">${o.entregado?'✅ Entregado':'🔴 Por entregar'}</button>
       </div>
-      <button class="btn btn-ghost full" style="margin-top:8px;font-size:13px;padding:8px" onclick="anular(${o.id})">↩️ Anular y devolver stock</button>
+      <button class="btn btn-ghost full" style="margin-top:8px;font-size:13px;padding:8px" onclick="anular(${o.id})">↩️ Anular y devolver stock</button>`}
     </div>`).join("") : `<div class="box muted">Aún no hay pedidos.</div>`;
 }
 async function estado(id,campo,valor){
@@ -455,41 +484,78 @@ async function anular(id){
   toast("↩️ Pedido anulado");
 }
 
-/* ---------- ADMIN: AJUSTES ---------- */
+/* Ventas */
+function periodo(b){
+  document.querySelectorAll(".chips button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
+  periodoVentas = b.dataset.p; renderVentas();
+}
+function renderVentas(){
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  let desde = null;
+  if(periodoVentas==="hoy") desde = new Date(hoy);
+  if(periodoVentas==="7d"){ desde = new Date(hoy); desde.setDate(desde.getDate()-6); }
+  if(periodoVentas==="mes") desde = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  const enPeriodo = pedidos.filter(o=>!desde || new Date(o.fecha)>=desde);
+  const validos = enPeriodo.filter(o=>!o.anulado);
+  const pagados = validos.filter(o=>o.pagado);
+  const suma = arr => arr.reduce((s,x)=>s+x.total,0);
+  const unidades = validos.reduce((s,o)=>s+o.detalle.reduce((a,d)=>a+(+d.cantidad),0),0);
+
+  // productos más vendidos
+  const porProd = {};
+  validos.forEach(o=>o.detalle.forEach(d=>{
+    const k=d.nombre; porProd[k]=porProd[k]||{u:0,m:0}; porProd[k].u+=+d.cantidad; porProd[k].m+=d.cantidad*d.precio; }));
+  const top = Object.entries(porProd).sort((a,b)=>b[1].u-a[1].u);
+  const maxU = top.length ? top[0][1].u : 1;
+
+  // ventas por día
+  let dias = [];
+  if(periodoVentas!=="hoy"){
+    let ini = desde ? new Date(desde) : (validos.length ? new Date(Math.min(...validos.map(o=>+new Date(o.fecha)))) : new Date(hoy));
+    ini.setHours(0,0,0,0);
+    const maxDias = 31; const d = new Date(hoy); d.setDate(d.getDate()-(maxDias-1));
+    if(ini < d) ini = d;
+    for(let x=new Date(ini); x<=hoy; x.setDate(x.getDate()+1)){
+      const sig = new Date(x); sig.setDate(sig.getDate()+1);
+      dias.push({ f:new Date(x), t:suma(validos.filter(o=>{const f=new Date(o.fecha);return f>=x&&f<sig;})) });
+    }
+  }
+  const maxD = Math.max(1,...dias.map(x=>x.t));
+
+  $("ventas").innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><small>💰 Cobrado</small><b style="color:var(--green)">${clp(suma(pagados))}</b></div>
+      <div class="kpi"><small>🟡 Por cobrar</small><b style="color:var(--yellow)">${clp(suma(validos)-suma(pagados))}</b></div>
+      <div class="kpi"><small>🧾 Pedidos</small><b>${validos.length}</b></div>
+      <div class="kpi"><small>🥤 Latas vendidas</small><b>${unidades}</b></div>
+      <div class="kpi"><small>📈 Ticket promedio</small><b>${clp(validos.length?suma(validos)/validos.length:0)}</b></div>
+      <div class="kpi"><small>❌ Anulados</small><b style="color:var(--red)">${enPeriodo.length-validos.length}</b></div>
+    </div>
+    ${dias.length>1 ? `<div class="box"><h3 style="margin-top:0">📅 Ventas por día</h3>
+      <div class="days">${dias.map(x=>`<div title="${clp(x.t)}"><i style="height:${Math.round(x.t/maxD*100)}%"></i>${x.f.getDate()}</div>`).join("")}</div>
+      <div class="muted" style="margin-top:6px">Mejor día: ${(()=>{const b=dias.reduce((a,c)=>c.t>a.t?c:a,dias[0]);return b.t?b.f.toLocaleDateString("es-CL",{weekday:"long",day:"numeric",month:"short"})+" · "+clp(b.t):"—";})()}</div></div>` : ""}
+    <div class="box"><h3 style="margin-top:0">🏆 Más vendidos</h3>
+      ${top.length ? top.map(([n,v])=>`<div class="hbar"><div class="top"><span>${esc(n)}</span><b>${v.u} · ${clp(v.m)}</b></div>
+        <div class="track"><div class="fill" style="width:${Math.round(v.u/maxU*100)}%"></div></div></div>`).join("") : `<div class="muted">Sin ventas en este período</div>`}
+    </div>
+    <div class="muted" style="text-align:center">No incluye pedidos anulados</div>`;
+}
+
+/* Ajustes */
 function renderAjustes(){
   const a=ajustes;
   $("cWa").value=a.wa||""; $("cTitular").value=a.titular||""; $("cRut").value=a.rut||""; $("cBanco").value=a.banco||"";
   $("cTipo").value=a.tipo||""; $("cCuenta").value=a.cuenta||""; $("cCorreo").value=a.correo||""; $("cMP").value=a.mp||"";
+  $("cHoras").value = a.horas_reserva ?? 2;
 }
 async function guardarAjustes(){
   const n = { wa:$("cWa").value.replace(/\D/g,""), titular:$("cTitular").value.trim(), rut:$("cRut").value.trim(),
     banco:$("cBanco").value.trim(), tipo:$("cTipo").value.trim(), cuenta:$("cCuenta").value.trim(),
-    correo:$("cCorreo").value.trim(), mp:$("cMP").value.trim() };
+    correo:$("cCorreo").value.trim(), mp:$("cMP").value.trim(),
+    horas_reserva: Math.min(72, Math.max(0, parseInt($("cHoras").value)||0)) };
   const { error } = await db.from("ajustes").update(n).eq("id",1);
   if(error) return falla(error, "No se pudieron guardar los ajustes");
   ajustes = Object.assign(ajustes, n); toast("✅ Ajustes guardados");
-}
-
-/* ---------- MIGRAR datos de la versión 1 (guardados en este iPhone) ---------- */
-async function importarLocal(){
-  let locales = []; try{ locales = JSON.parse(localStorage.getItem("am_productos")||"[]"); }catch(e){}
-  if(!locales.length) return toast("No hay datos guardados en este iPhone", true);
-  if(!confirm(`Se subirán las fotos y el stock de ${locales.length} productos guardados en este iPhone. ¿Continuar?`)) return;
-  const norm = s => String(s).toLowerCase().replace(/\s+/g," ").trim();
-  let ok = 0;
-  for(const l of locales){
-    const p = productosAdmin.find(x=>norm(x.nombre)===norm(l.nombre));
-    if(!p) continue;
-    await editar(p.id, { precio:l.precio, stock:l.stock });
-    if(l.foto && l.foto.startsWith("data:")){
-      const blob = await (await fetch(l.foto)).blob();
-      await subirFoto(p.id, blob, true);
-    }
-    ok++;
-  }
-  await cargarProductosAdmin(); await cargarProductos();
-  toast(`✅ ${ok} productos actualizados`);
-  if(ok && confirm("Datos subidos. ¿Borrar la copia antigua de este iPhone?")){ localStorage.removeItem("am_productos"); localStorage.removeItem("am_pedidos"); localStorage.removeItem("am_ajustes"); $("btnImportar").style.display="none"; }
 }
 
 /* ---------- INICIO ---------- */
@@ -499,7 +565,6 @@ async function importarLocal(){
   }
   await Promise.all([cargarProductos(), cargarAjustes()]);
   renderCatalogo();
-  // refresca stock cada vez que el cliente vuelve a la app
   document.addEventListener("visibilitychange", async ()=>{ if(!document.hidden){ await cargarProductos(); if($("catalogo").classList.contains("active")) renderCatalogo(); } });
 })();
 if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
