@@ -60,8 +60,10 @@ label{font-size:12px;color:var(--muted);display:block;margin:8px 0 4px}
 .chips{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .chips button{padding:9px 2px;font-size:13px;border-radius:20px}
 .chips button.on{background:var(--green);color:#04130A;border-color:var(--green)}
+.chips3{grid-template-columns:repeat(3,1fr)}
 .pill{font-size:12px;font-weight:700;padding:8px 10px;border-radius:20px;border:none;cursor:pointer}
 .ok{background:rgba(57,255,106,.15);color:var(--green)}.pend{background:rgba(255,201,60,.15);color:var(--yellow)}
+.tag-man{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px;background:rgba(30,91,255,.2);color:#8FB0FF;margin-top:4px}
 .anul{opacity:.55}.anul .tag{color:var(--red);font-weight:700;font-size:13px}
 .adm-item{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:start}
 .adm-item .thumb{width:64px;height:64px;border-radius:10px;background:#0B1220;overflow:hidden;display:flex;align-items:center;justify-content:center}
@@ -76,6 +78,12 @@ label{font-size:12px;color:var(--muted);display:block;margin:8px 0 4px}
 .days{display:flex;align-items:flex-end;gap:4px;height:120px;margin-top:8px}
 .days div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:9px;color:var(--muted)}
 .days i{display:block;width:100%;background:linear-gradient(0deg,var(--blue),var(--green));border-radius:4px 4px 0 0;min-height:2px}
+.mrow{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.mrow .th{width:48px;height:48px;border-radius:10px;background:#0B1220;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.mrow .th img{width:100%;height:100%;object-fit:cover}
+.mrow .qty{padding:0;gap:8px;margin:0}
+.switch{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px;font-weight:700}
+.switch input{width:52px;height:30px;accent-color:var(--green)}
 .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--green);color:#04130A;font-weight:800;padding:10px 16px;border-radius:12px;display:none;z-index:50;max-width:90%;text-align:center}
 .toast.err{background:var(--red);color:#fff}
 .big-ok{text-align:center;padding:10px 0}.big-ok div{font-size:54px}
@@ -141,6 +149,30 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
   <button class="btn btn-ghost full" onclick="go('catalogo')">Volver a la tienda</button>
 </section>
 
+<!-- VENTA MANUAL -->
+<section id="manual" class="view">
+  <h2>🏪 Venta manual</h2>
+  <div class="muted">Para ventas en persona que no pasan por la tienda. Descuenta stock y suma en Ventas.</div>
+  <div class="box" id="manualLista" style="padding:4px 14px"></div>
+  <div class="total"><span>TOTAL</span><span id="manualTotal">$0</span></div>
+  <div class="box">
+    <label style="margin-top:0">Forma de pago</label>
+    <div class="chips chips3" id="manualMetodo">
+      <button class="btn btn-ghost on" data-m="Efectivo" onclick="elegirMetodo(this)">💵 Efectivo</button>
+      <button class="btn btn-ghost" data-m="Transferencia" onclick="elegirMetodo(this)">🏦 Transfer.</button>
+      <button class="btn btn-ghost" data-m="Mercado Pago" onclick="elegirMetodo(this)">💙 M. Pago</button>
+    </div>
+    <div class="switch" style="margin-top:14px"><span>✅ Ya está pagado</span><input type="checkbox" id="manualPagado" checked></div>
+    <div class="muted" style="margin-top:4px">Si lo desmarcas, queda como <b>por cobrar</b> (fiado) y no se anula sola.</div>
+    <label>Nota (opcional)</label>
+    <input id="manualNota" placeholder="Ej: compañero de trabajo, Juan">
+  </div>
+  <div class="stack">
+    <button class="btn btn-green full" id="btnManual" onclick="registrarManual()">💾 REGISTRAR VENTA</button>
+    <button class="btn btn-ghost full" onclick="volverPedidos()">Cancelar</button>
+  </div>
+</section>
+
 <section id="admin" class="view">
   <h2>🔐 Administración</h2>
   <div class="tabs">
@@ -156,13 +188,14 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
   </div>
 
   <div id="aPed" class="atab" style="display:none">
-    <button class="btn btn-ghost full" onclick="cargarPedidos()">🔄 Actualizar pedidos</button>
+    <button class="btn btn-green full" onclick="abrirManual()">🏪 REGISTRAR VENTA MANUAL</button>
+    <button class="btn btn-ghost full" style="margin-top:10px" onclick="cargarPedidos()">🔄 Actualizar pedidos</button>
     <div id="resumenPedidos" class="box"></div>
     <div id="admPedidos"></div>
   </div>
 
   <div id="aVen" class="atab" style="display:none">
-    <div class="chips">
+    <div class="chips" id="chipsPeriodo">
       <button class="btn btn-ghost" data-p="hoy" onclick="periodo(this)">Hoy</button>
       <button class="btn btn-ghost on" data-p="7d" onclick="periodo(this)">7 días</button>
       <button class="btn btn-ghost" data-p="mes" onclick="periodo(this)">Mes</button>
@@ -211,19 +244,21 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* A&M Drinks · v4 — Nexo */
+/* A&M Drinks · v5 — Nexo */
 const CFG = window.AM_CONFIG || {};
 let db = null;
 try { db = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_KEY); } catch(e) {}
 
 let productos = [], ajustes = {}, pedidos = [];
 let carrito = {}, pedidoActual = null, esAdmin = false, periodoVentas = "7d";
+let manual = {}, metodoManual = "Efectivo";
 
 const $ = id => document.getElementById(id);
 const clp = n => "$" + Math.round(n||0).toLocaleString("es-CL");
 const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const numPed = n => "#" + String(n).padStart(4,"0");
 const horasReserva = () => Math.max(0, +(ajustes.horas_reserva ?? 2) || 0);
+const esManual = o => (o.origen||"tienda") === "manual";
 
 function toast(t,err){ const e=$("toast"); e.textContent=t; e.className="toast"+(err?" err":""); e.style.display="block"; clearTimeout(e._t); e._t=setTimeout(()=>e.style.display="none",err?3500:1800); }
 function falla(error, msg){ console.error(error); toast("⚠️ " + (msg || (error && error.message) || "Error de conexión"), true); }
@@ -249,7 +284,6 @@ async function cargarAjustes(){
   if(error) return falla(error, "No se pudieron cargar los ajustes");
   ajustes = data;
 }
-
 function imgProducto(p){
   return p.foto ? `<img src="${esc(p.foto)}" alt="">`
                 : `<div class="can" style="background:linear-gradient(90deg,${esc(p.color)},${esc(p.color)}cc)"><span>⚡</span></div>`;
@@ -305,7 +339,6 @@ function renderCarrito(){
   $("btnConfirmar").disabled = !items.length;
   actualizarBarra();
 }
-
 async function confirmarPedido(){
   const btn = $("btnConfirmar"); btn.disabled = true; btn.textContent = "Procesando…";
   const items = Object.entries(carrito).map(([id,q])=>({id:+id, cantidad:q}));
@@ -320,9 +353,9 @@ async function confirmarPedido(){
   pedidoActual = { numero: r.numero, total: r.total, detalle: detalleLocal };
   carrito = {};
   await Promise.all([cargarProductos(), cargarAjustes()]);
+  actualizarBarra();
   mostrarPago();
 }
-
 function mostrarPago(){
   const a = ajustes, p = pedidoActual, h = horasReserva();
   $("pagoTitulo").textContent = "Pedido " + numPed(p.numero) + " generado";
@@ -333,7 +366,6 @@ function mostrarPago(){
   $("datosBanco").innerHTML = f("Titular",a.titular)+f("RUT",a.rut)+f("Banco",a.banco)+f("Tipo de cuenta",a.tipo)+f("N° cuenta",a.cuenta)+(a.correo?f("Correo",a.correo):"")+f("Monto",clp(p.total));
   $("boxMP").style.display = a.mp ? "block" : "none";
   if(a.mp) $("linkMP").href = a.mp;
-  actualizarBarra();
   go("pago");
 }
 function copiarDatos(){
@@ -372,6 +404,7 @@ function tab(b){
   document.querySelectorAll(".atab").forEach(x=>x.style.display="none"); $(b.dataset.t).style.display="block";
   if(b.dataset.t==="aPed" || b.dataset.t==="aVen") cargarPedidos();
 }
+function abrirTab(id){ const b=document.querySelector(`.tabs button[data-t="${id}"]`); if(b) tab(b); }
 
 /* Productos */
 let productosAdmin = [];
@@ -439,6 +472,56 @@ async function eliminar(id){
   await cargarProductosAdmin(); await cargarProductos();
 }
 
+/* ---------- VENTA MANUAL ---------- */
+async function abrirManual(){
+  manual = {}; metodoManual = "Efectivo";
+  document.querySelectorAll("#manualMetodo button").forEach(x=>x.classList.toggle("on", x.dataset.m==="Efectivo"));
+  $("manualPagado").checked = true; $("manualNota").value = "";
+  await cargarProductosAdmin();
+  go("manual"); renderManual();
+}
+function renderManual(){
+  $("manualLista").innerHTML = productosAdmin.map(p=>{
+    const q = manual[p.id]||0;
+    return `<div class="mrow">
+      <div class="th">${p.foto?`<img src="${esc(p.foto)}">`:`<div class="can" style="background:${esc(p.color)};width:40%;height:70%"></div>`}</div>
+      <div><b style="font-size:14px">${esc(p.nombre)}</b><div class="muted">${clp(p.precio)} · Stock ${p.stock}</div></div>
+      <div class="qty">
+        <button onclick="cambiarManual(${p.id},-1)" ${q<=0?'disabled':''}>−</button><b>${q}</b>
+        <button class="plus" onclick="cambiarManual(${p.id},1)" ${q>=p.stock?'disabled':''}>+</button>
+      </div></div>`;
+  }).join("") || `<div class="muted" style="padding:12px 0">No hay productos</div>`;
+  const total = Object.entries(manual).reduce((s,[id,q])=>{ const p=productosAdmin.find(x=>x.id==id); return s+(p?p.precio*q:0); },0);
+  $("manualTotal").textContent = clp(total);
+  $("btnManual").disabled = !Object.keys(manual).length;
+}
+function cambiarManual(id,d){
+  const p = productosAdmin.find(x=>x.id===id); if(!p) return;
+  const n = (manual[id]||0)+d;
+  if(n>p.stock) return toast(`⚠️ Solo quedan ${p.stock} unidades`, true);
+  if(n<=0) delete manual[id]; else manual[id]=n;
+  renderManual();
+}
+function elegirMetodo(b){
+  document.querySelectorAll("#manualMetodo button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
+  metodoManual = b.dataset.m;
+}
+async function registrarManual(){
+  const btn = $("btnManual"); btn.disabled = true; btn.textContent = "Guardando…";
+  const items = Object.entries(manual).map(([id,q])=>({id:+id, cantidad:q}));
+  const { data, error } = await db.rpc("crear_venta_manual", {
+    items, p_metodo: metodoManual, p_pagado: $("manualPagado").checked, p_nota: $("manualNota").value.trim() });
+  btn.textContent = "💾 REGISTRAR VENTA";
+  if(error){ btn.disabled = false; await cargarProductosAdmin(); renderManual();
+    return falla(error, (error.message||"").replace(/^.*?(Stock|Producto|Cantidad|No hay|No autorizado)/,"$1") || "No se pudo registrar"); }
+  const r = Array.isArray(data) ? data[0] : data;
+  toast(`✅ Venta ${numPed(r.numero)} registrada · ${clp(r.total)}`);
+  manual = {};
+  await Promise.all([cargarProductos(), cargarProductosAdmin()]);
+  volverPedidos();
+}
+function volverPedidos(){ go("admin"); abrirTab("aPed"); }
+
 /* Pedidos */
 async function cargarPedidos(){
   const { data, error } = await db.from("pedidos").select("*").order("id",{ascending:false}).limit(1000);
@@ -446,7 +529,7 @@ async function cargarPedidos(){
   pedidos = data; renderPedidos(); renderVentas();
 }
 function venceEn(o){
-  const h = horasReserva(); if(!h || o.pagado || o.entregado || o.anulado) return "";
+  const h = horasReserva(); if(!h || esManual(o) || o.pagado || o.entregado || o.anulado) return "";
   const min = Math.round((new Date(o.fecha).getTime() + h*3600000 - Date.now())/60000);
   if(min <= 0) return `<div class="muted" style="color:var(--yellow)">⏱️ Se anulará en los próximos minutos</div>`;
   return `<div class="muted" style="color:var(--yellow)">⏱️ Se anula en ${min>=60?Math.floor(min/60)+" h "+(min%60)+" min":min+" min"} si no se paga</div>`;
@@ -459,13 +542,15 @@ function renderPedidos(){
     <div class="kv"><span>Por entregar</span><b>${activos.filter(x=>!x.entregado).length}</b></div>`;
   $("admPedidos").innerHTML = pedidos.length ? pedidos.slice(0,100).map(o=>`
     <div class="box ${o.anulado?'anul':''}">
-      <div class="kv"><b>Pedido ${numPed(o.id)}</b><span class="muted">${new Date(o.fecha).toLocaleString("es-CL",{dateStyle:"short",timeStyle:"short"})}</span></div>
+      <div class="kv"><b>${esManual(o)?'Venta':'Pedido'} ${numPed(o.id)}</b><span class="muted">${new Date(o.fecha).toLocaleString("es-CL",{dateStyle:"short",timeStyle:"short"})}</span></div>
+      ${esManual(o)?`<div class="tag-man">🏪 Venta manual${o.metodo?' · '+esc(o.metodo):''}</div>`:''}
+      ${o.nota?`<div class="muted" style="margin-top:4px">📝 ${esc(o.nota)}</div>`:''}
       ${o.detalle.map(d=>`<div class="muted">• ${d.cantidad} × ${esc(d.nombre)}</div>`).join("")}
       <div class="kv" style="margin-top:6px"><span>Total</span><b>${clp(o.total)}</b></div>
       ${o.anulado ? `<div class="tag">❌ Anulado · ${esc(o.motivo||"")}</div>` : `
       ${venceEn(o)}
       <div class="two" style="margin-top:8px">
-        <button class="pill ${o.pagado?'ok':'pend'}" onclick="estado(${o.id},'pagado',${!o.pagado})">${o.pagado?'✅ Pagado':'🟡 Pago pendiente'}</button>
+        <button class="pill ${o.pagado?'ok':'pend'}" onclick="estado(${o.id},'pagado',${!o.pagado})">${o.pagado?'✅ Pagado':'🟡 '+(esManual(o)?'Por cobrar':'Pago pendiente')}</button>
         <button class="pill ${o.entregado?'ok':'pend'}" onclick="estado(${o.id},'entregado',${!o.entregado})">${o.entregado?'✅ Entregado':'🔴 Por entregar'}</button>
       </div>
       <button class="btn btn-ghost full" style="margin-top:8px;font-size:13px;padding:8px" onclick="anular(${o.id})">↩️ Anular y devolver stock</button>`}
@@ -477,16 +562,16 @@ async function estado(id,campo,valor){
   await cargarPedidos();
 }
 async function anular(id){
-  if(!confirm("¿Anular el pedido y devolver las unidades al stock?")) return;
+  if(!confirm("¿Anular y devolver las unidades al stock?")) return;
   const { error } = await db.rpc("anular_pedido", { pid:id });
   if(error) return falla(error);
   await Promise.all([cargarPedidos(), cargarProductosAdmin(), cargarProductos()]);
-  toast("↩️ Pedido anulado");
+  toast("↩️ Anulado");
 }
 
 /* Ventas */
 function periodo(b){
-  document.querySelectorAll(".chips button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
+  document.querySelectorAll("#chipsPeriodo button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
   periodoVentas = b.dataset.p; renderVentas();
 }
 function renderVentas(){
@@ -500,20 +585,24 @@ function renderVentas(){
   const pagados = validos.filter(o=>o.pagado);
   const suma = arr => arr.reduce((s,x)=>s+x.total,0);
   const unidades = validos.reduce((s,o)=>s+o.detalle.reduce((a,d)=>a+(+d.cantidad),0),0);
+  const tienda = validos.filter(o=>!esManual(o)), manuales = validos.filter(esManual);
 
-  // productos más vendidos
   const porProd = {};
   validos.forEach(o=>o.detalle.forEach(d=>{
     const k=d.nombre; porProd[k]=porProd[k]||{u:0,m:0}; porProd[k].u+=+d.cantidad; porProd[k].m+=d.cantidad*d.precio; }));
   const top = Object.entries(porProd).sort((a,b)=>b[1].u-a[1].u);
   const maxU = top.length ? top[0][1].u : 1;
 
-  // ventas por día
+  const porMetodo = {};
+  pagados.forEach(o=>{ const k = esManual(o) ? (o.metodo||"Sin indicar") : "Tienda (transferencia)"; porMetodo[k]=(porMetodo[k]||0)+o.total; });
+  const metodos = Object.entries(porMetodo).sort((a,b)=>b[1]-a[1]);
+  const maxM = metodos.length ? metodos[0][1] : 1;
+
   let dias = [];
   if(periodoVentas!=="hoy"){
     let ini = desde ? new Date(desde) : (validos.length ? new Date(Math.min(...validos.map(o=>+new Date(o.fecha)))) : new Date(hoy));
     ini.setHours(0,0,0,0);
-    const maxDias = 31; const d = new Date(hoy); d.setDate(d.getDate()-(maxDias-1));
+    const d = new Date(hoy); d.setDate(d.getDate()-30);
     if(ini < d) ini = d;
     for(let x=new Date(ini); x<=hoy; x.setDate(x.getDate()+1)){
       const sig = new Date(x); sig.setDate(sig.getDate()+1);
@@ -526,10 +615,10 @@ function renderVentas(){
     <div class="kpis">
       <div class="kpi"><small>💰 Cobrado</small><b style="color:var(--green)">${clp(suma(pagados))}</b></div>
       <div class="kpi"><small>🟡 Por cobrar</small><b style="color:var(--yellow)">${clp(suma(validos)-suma(pagados))}</b></div>
-      <div class="kpi"><small>🧾 Pedidos</small><b>${validos.length}</b></div>
+      <div class="kpi"><small>🌐 Ventas tienda</small><b>${clp(suma(tienda))}</b><small>${tienda.length} pedidos</small></div>
+      <div class="kpi"><small>🏪 Ventas manuales</small><b>${clp(suma(manuales))}</b><small>${manuales.length} ventas</small></div>
       <div class="kpi"><small>🥤 Latas vendidas</small><b>${unidades}</b></div>
       <div class="kpi"><small>📈 Ticket promedio</small><b>${clp(validos.length?suma(validos)/validos.length:0)}</b></div>
-      <div class="kpi"><small>❌ Anulados</small><b style="color:var(--red)">${enPeriodo.length-validos.length}</b></div>
     </div>
     ${dias.length>1 ? `<div class="box"><h3 style="margin-top:0">📅 Ventas por día</h3>
       <div class="days">${dias.map(x=>`<div title="${clp(x.t)}"><i style="height:${Math.round(x.t/maxD*100)}%"></i>${x.f.getDate()}</div>`).join("")}</div>
@@ -538,7 +627,11 @@ function renderVentas(){
       ${top.length ? top.map(([n,v])=>`<div class="hbar"><div class="top"><span>${esc(n)}</span><b>${v.u} · ${clp(v.m)}</b></div>
         <div class="track"><div class="fill" style="width:${Math.round(v.u/maxU*100)}%"></div></div></div>`).join("") : `<div class="muted">Sin ventas en este período</div>`}
     </div>
-    <div class="muted" style="text-align:center">No incluye pedidos anulados</div>`;
+    <div class="box"><h3 style="margin-top:0">💳 Cobrado por forma de pago</h3>
+      ${metodos.length ? metodos.map(([n,v])=>`<div class="hbar"><div class="top"><span>${esc(n)}</span><b>${clp(v)}</b></div>
+        <div class="track"><div class="fill" style="width:${Math.round(v/maxM*100)}%"></div></div></div>`).join("") : `<div class="muted">Sin cobros en este período</div>`}
+    </div>
+    <div class="muted" style="text-align:center">No incluye pedidos anulados (${enPeriodo.length-validos.length} en el período)</div>`;
 }
 
 /* Ajustes */
