@@ -53,8 +53,8 @@ h2{font-size:20px;margin-bottom:12px}h3{font-size:16px;margin:16px 0 8px;color:v
 .kv{display:flex;justify-content:space-between;padding:5px 0;font-size:14px;gap:10px}.kv span:first-child{color:var(--muted)}
 input{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:#0B1220;color:var(--text);font-size:16px}
 label{font-size:12px;color:var(--muted);display:block;margin:8px 0 4px}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
-.tabs button{padding:9px 2px;font-size:12px;line-height:1.3;border-radius:12px}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:12px}
+.tabs button{padding:8px 0;font-size:11px;line-height:1.3;border-radius:12px}
 .tabs button span{display:block;font-size:18px}
 .tabs button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
 .chips{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
@@ -82,6 +82,16 @@ label{font-size:12px;color:var(--muted);display:block;margin:8px 0 4px}
 .mrow .th{width:48px;height:48px;border-radius:10px;background:#0B1220;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .mrow .th img{width:100%;height:100%;object-fit:cover}
 .mrow .qty{padding:0;gap:8px;margin:0}
+/* Stock */
+.srow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.srow:last-child{border-bottom:none}
+.srow .n{font-size:15px;font-weight:600;line-height:1.25}
+.snum{min-width:58px;text-align:center;font-size:20px;font-weight:900;padding:6px 10px;border-radius:12px}
+.s-ok{background:rgba(57,255,106,.15);color:var(--green)}
+.s-low{background:rgba(255,201,60,.15);color:var(--yellow)}
+.s-out{background:rgba(255,77,94,.15);color:var(--red)}
+.leyenda{display:flex;justify-content:center;gap:14px;font-size:12px;color:var(--muted);margin-top:4px}
+.leyenda i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
 .switch{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px;font-weight:700}
 .switch input{width:52px;height:30px;accent-color:var(--green)}
 .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--green);color:#04130A;font-weight:800;padding:10px 16px;border-radius:12px;display:none;z-index:50;max-width:90%;text-align:center}
@@ -149,7 +159,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
   <button class="btn btn-ghost full" onclick="go('catalogo')">Volver a la tienda</button>
 </section>
 
-<!-- VENTA MANUAL -->
 <section id="manual" class="view">
   <h2>🏪 Venta manual</h2>
   <div class="muted">Para ventas en persona que no pasan por la tienda. Descuenta stock y suma en Ventas.</div>
@@ -177,6 +186,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
   <h2>🔐 Administración</h2>
   <div class="tabs">
     <button class="btn btn-ghost on" data-t="aProd" onclick="tab(this)"><span>📦</span>Productos</button>
+    <button class="btn btn-ghost" data-t="aStock" onclick="tab(this)"><span>📋</span>Stock</button>
     <button class="btn btn-ghost" data-t="aPed" onclick="tab(this)"><span>🛒</span>Pedidos</button>
     <button class="btn btn-ghost" data-t="aVen" onclick="tab(this)"><span>📊</span>Ventas</button>
     <button class="btn btn-ghost" data-t="aConf" onclick="tab(this)"><span>⚙️</span>Ajustes</button>
@@ -185,6 +195,11 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
   <div id="aProd" class="atab">
     <div id="admProductos"></div>
     <button class="btn btn-green full" onclick="agregarProducto()">➕ AGREGAR PRODUCTO</button>
+  </div>
+
+  <div id="aStock" class="atab" style="display:none">
+    <div id="stockResumen"></div>
+    <button class="btn btn-ghost full" onclick="cargarStock()">🔄 Actualizar</button>
   </div>
 
   <div id="aPed" class="atab" style="display:none">
@@ -244,7 +259,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* A&M Drinks · v5 — Nexo */
+/* A&M Drinks · v6 — Nexo */
 const CFG = window.AM_CONFIG || {};
 let db = null;
 try { db = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_KEY); } catch(e) {}
@@ -252,6 +267,7 @@ try { db = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_KEY); } c
 let productos = [], ajustes = {}, pedidos = [];
 let carrito = {}, pedidoActual = null, esAdmin = false, periodoVentas = "7d";
 let manual = {}, metodoManual = "Efectivo";
+const STOCK_BAJO = 3;
 
 const $ = id => document.getElementById(id);
 const clp = n => "$" + Math.round(n||0).toLocaleString("es-CL");
@@ -403,6 +419,7 @@ function tab(b){
   document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
   document.querySelectorAll(".atab").forEach(x=>x.style.display="none"); $(b.dataset.t).style.display="block";
   if(b.dataset.t==="aPed" || b.dataset.t==="aVen") cargarPedidos();
+  if(b.dataset.t==="aStock") cargarStock();
 }
 function abrirTab(id){ const b=document.querySelector(`.tabs button[data-t="${id}"]`); if(b) tab(b); }
 
@@ -411,7 +428,7 @@ let productosAdmin = [];
 async function cargarProductosAdmin(){
   const { data, error } = await db.from("productos").select("*").eq("activo",true).order("orden").order("id");
   if(error) return falla(error);
-  productosAdmin = data; renderProductosAdmin();
+  productosAdmin = data; renderProductosAdmin(); renderStock();
 }
 function renderProductosAdmin(){
   $("admProductos").innerHTML = productosAdmin.map(p=>`
@@ -435,7 +452,7 @@ async function editar(id, cambios){
   const { error } = await db.from("productos").update(cambios).eq("id", id);
   if(error) return falla(error, "No se pudo guardar");
   Object.assign(productosAdmin.find(x=>x.id===id), cambios);
-  toast("💾 Guardado"); await cargarProductos();
+  toast("💾 Guardado"); renderStock(); await cargarProductos();
 }
 function comprimir(file){
   return new Promise((res,rej)=>{
@@ -470,6 +487,30 @@ async function eliminar(id){
   const { error } = await db.from("productos").update({ activo:false }).eq("id", id);
   if(error) return falla(error);
   await cargarProductosAdmin(); await cargarProductos();
+}
+
+/* ---------- STOCK (resumen simple) ---------- */
+async function cargarStock(){ await cargarProductosAdmin(); }
+function renderStock(){
+  if(!$("stockResumen")) return;
+  const lista = productosAdmin;
+  const unidades = lista.reduce((s,p)=>s+p.stock,0);
+  const valor = lista.reduce((s,p)=>s+p.stock*p.precio,0);
+  const agotados = lista.filter(p=>p.stock<=0).length;
+  const bajos = lista.filter(p=>p.stock>0 && p.stock<=STOCK_BAJO).length;
+  const clase = s => s<=0 ? "s-out" : (s<=STOCK_BAJO ? "s-low" : "s-ok");
+  $("stockResumen").innerHTML = `
+    <div class="kpis">
+      <div class="kpi"><small>🥤 Latas en stock</small><b>${unidades}</b></div>
+      <div class="kpi"><small>💰 Valor del stock</small><b style="color:var(--green)">${clp(valor)}</b></div>
+      <div class="kpi"><small>⚠️ Stock bajo</small><b style="color:var(--yellow)">${bajos}</b></div>
+      <div class="kpi"><small>❌ Agotados</small><b style="color:var(--red)">${agotados}</b></div>
+    </div>
+    <div class="box" style="padding:4px 14px">
+      ${lista.length ? lista.map(p=>`<div class="srow"><span class="n">${esc(p.nombre)}</span><span class="snum ${clase(p.stock)}">${p.stock}</span></div>`).join("") : `<div class="muted" style="padding:12px 0">No hay productos</div>`}
+    </div>
+    <div class="leyenda"><span><i style="background:var(--green)"></i>Disponible</span><span><i style="background:var(--yellow)"></i>Bajo (≤${STOCK_BAJO})</span><span><i style="background:var(--red)"></i>Agotado</span></div>
+    <div class="muted" style="text-align:center;margin:6px 0 4px">El valor del stock se calcula con el precio de venta</div>`;
 }
 
 /* ---------- VENTA MANUAL ---------- */
